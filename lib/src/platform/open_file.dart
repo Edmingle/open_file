@@ -10,27 +10,23 @@ class OpenFile {
 
   OpenFile._();
 
-  ///linuxDesktopName like 'xdg'/'gnome'
   static Future<OpenResult> open(String? filePath,
       {String? type,
       String? uti,
       String linuxDesktopName = "xdg",
       bool linuxByProcess = false}) async {
-    // assert(filePath != null);
-    // if (!Platform.isIOS && !Platform.isAndroid) {
-    //   int _result;
-    //   var _windowsResult;
+      
+    Map<String, String?> map = {
+      "file_path": filePath!,
+      "type": type,
+      "uti": uti,
+    };
+    final _result = await _channel.invokeMethod('open_file', map);
+    final resultMap = json.decode(_result) as Map<String, dynamic>;
+    return OpenResult.fromJson(resultMap);
+    
     return OpenResult(
         type: ResultType.done,
         message: "This operating system is not currently supported");
   }
-
-// Map<String, String?> map = {
-//   "file_path": filePath!,
-//   "type": type,
-//   "uti": uti,
-// };
-// final _result = await _channel.invokeMethod('open_file', map);
-// final resultMap = json.decode(_result) as Map<String, dynamic>;
-// return OpenResult.fromJson(resultMap);
 }
