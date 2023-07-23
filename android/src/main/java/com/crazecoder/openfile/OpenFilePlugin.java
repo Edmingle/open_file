@@ -75,6 +75,7 @@ public class OpenFilePlugin implements MethodCallHandler
             if (!isFileAvailable()) {
                 return;
             }
+
             if (pathRequiresPermission()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && isExternalStoragePublicMedia(mimeType)) {
@@ -90,6 +91,8 @@ public class OpenFilePlugin implements MethodCallHandler
                             result(-3, "Permission denied: " + Manifest.permission.READ_MEDIA_AUDIO);
                             return;
                         }
+                    } else if (!isExternalStoragePublicMedia(mimeType)) {
+
                     } else if (!Environment.isExternalStorageManager()) {
                         result(-3, "Permission denied: " + Manifest.permission.MANAGE_EXTERNAL_STORAGE);
                         return;
@@ -101,10 +104,6 @@ public class OpenFilePlugin implements MethodCallHandler
                     }
 
                 }
-            }
-            if (TYPE_STRING_APK.equals(mimeType)) {
-                openApkFile();
-                return;
             }
             startActivity();
         } else {
@@ -176,7 +175,7 @@ public class OpenFilePlugin implements MethodCallHandler
         List<ResolveInfo> resolveInfoList;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             resolveInfoList = activity.getPackageManager().queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY));
-        }else{
+        } else {
             resolveInfoList = activity.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         }
         for (ResolveInfo resolveInfo : resolveInfoList) {
